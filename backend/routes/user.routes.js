@@ -13,13 +13,16 @@ userRouter.get("/login_user", authentication, async (req, res) => {
       { _id: userId },
       { password: 0, __v: 0 }
     );
-    // delete user.password
+    delete user.password
     res.send({ user });
   } catch (error) {}
 });
 
 userRouter.post("/signup", async (req, res) => {
   const { userName, email, password } = req.body;
+  if (!userName || !email || !password) {
+    return res.send({ message: "Fields are missing" });
+  }
   console.log(req.body);
   try {
     const existingUser = await UserModel.findOne({ email });
@@ -46,7 +49,9 @@ userRouter.post("/signup", async (req, res) => {
 
 userRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
+  if (!email || !password) {
+    return res.send({ message: "Fields are missing" });
+  }
   try {
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
@@ -78,9 +83,12 @@ userRouter.patch("/unlock", authentication, async (req, res) => {
       { password: 0, __v: 0 }
     );
     // delete user.password
+    if (user.roles.includes("CREATOR")) {
+      return res.send({ message: "Already you are a creator" });
+    }
     user.roles = [...user.roles, "CREATOR"];
     await user.save();
-    res.send({ user });
+    res.send({  message: "You are now creator" ,user });
   } catch (error) {}
 });
 
