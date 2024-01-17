@@ -1,4 +1,5 @@
 ### Live Link
+https://musical-choux-8ed69a.netlify.app/
 
 ### API Deployed Link
 https://weary-gilet-bull.cyclic.app/
